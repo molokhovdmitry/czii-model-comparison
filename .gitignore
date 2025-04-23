@@ -172,3 +172,12 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+*.code-workspace
+czii-cryo-et-object-identification/
+czii_data/
+.done_patterns/
+.snakemake/
+*.yaml
+*.csv
+logs/
