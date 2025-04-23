@@ -10,8 +10,8 @@ cluster:
 
 # Tomogram sets used for training or prediction
 tomos_sets:
-  training_list: ["TS_5_4"] # Tomograms in dataset_table for training ["tomo1", "tomo2", ...]
-  prediction_list: ["TS_5_5"]             # Tomograms in dataset_table for prediction ["tomo1", "tomo2", ...]
+  training_list: ["TS_5_4", "TS_69_2", "TS_6_4", "TS_6_6", "TS_73_6", "TS_86_3"] # Tomograms in dataset_table for training ["tomo1", "tomo2", ...]
+  prediction_list: ["TS_99_9"]             # Tomograms in dataset_table for prediction ["tomo1", "tomo2", ...]
 
 cross_validation:
   active: false
