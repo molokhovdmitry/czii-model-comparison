@@ -4,6 +4,10 @@ import glob
 import subprocess
 import argparse
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 def main():
     parser = argparse.ArgumentParser(description="Generate masks for all motl files in all experiments")
@@ -14,7 +18,7 @@ def main():
     parser.add_argument("-v", "--value", type=int, default=1, 
                         help="Value to assign to voxels in the spheres")
     parser.add_argument("-d", "--data_dir", type=str, 
-                        default="/home/dmitry/vkr/czii-model-comparison/deepict/czii_data",
+                        default=os.path.join(os.environ.get("DATA_DIR", "./czii_data")),
                         help="Path to the czii_data directory")
     args = parser.parse_args()
     

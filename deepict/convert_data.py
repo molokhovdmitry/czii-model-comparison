@@ -6,6 +6,7 @@ from pathlib import Path
 import shutil
 import emfile
 import mrcfile
+from dotenv import load_dotenv
 
 def convert_tomogram(zarr_path, output_path, voxel_size):
     """Convert zarr tomogram to MRC/REC format."""
@@ -176,9 +177,12 @@ def process_experiment(experiment, base_dir, voxel_spacing_dir, data_root_path):
             print(f"Warning: Particle picks for {particle_name} not found for experiment {experiment}")
 
 def main():
+    # Load environment variables
+    load_dotenv()
+    
     # Base directories
     base_dir = Path('czii_data')
-    data_root_path = Path('/home/dmitry/vkr/czii-model-comparison/czii-cryo-et-object-identification')
+    data_root_path = Path(os.getenv('CZII_DATA_ROOT_PATH'))
     voxel_spacing_dir = 'VoxelSpacing10.000'  # Assuming same for all experiments
     
     # Remove existing data directory if it exists

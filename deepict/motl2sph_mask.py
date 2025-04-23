@@ -1,8 +1,11 @@
 import os
 import sys
+from dotenv import load_dotenv
+
+load_dotenv()
 
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-SRC_DIR = os.path.abspath(FILE_DIR + "/../3d_cnn/src")
+SRC_DIR = os.path.abspath(os.getenv('DEEPICT_SRC_DIR'))
 print(SRC_DIR)
 sys.path.append(SRC_DIR)
 
