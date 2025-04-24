@@ -178,6 +178,6 @@ czii-cryo-et-object-identification/
 czii_data/
 .done_patterns/
 .snakemake/
-*.yaml
+test_configs/
 *.csv
 logs/
