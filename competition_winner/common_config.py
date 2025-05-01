@@ -36,7 +36,6 @@ cfg.lr = 1e-4
 cfg.schedule = "cosine"
 cfg.num_cycles = 0.5
 cfg.weight_decay = 0
-cfg.epochs = 10
 cfg.seed = -1
 cfg.resume_training = False
 cfg.distributed = False
@@ -61,7 +60,6 @@ cfg.grad_accumulation = 1
 cfg.syncbn = False
 cfg.gpu = 0
 cfg.dp = False
-cfg.num_workers = 8
 cfg.drop_last = True
 cfg.save_checkpoint = True
 cfg.save_only_last_ckpt = False
@@ -85,7 +83,7 @@ cfg.disable_tqdm = False
 
 # paths
 
-cfg.data_folder = '/mount/cryo/data/czii-cryo-et-object-identification/train/static/ExperimentRuns/'
+cfg.data_folder = '/workspace/czii-cryo-et-object-identification/train/static/ExperimentRuns/'
 cfg.train_df = 'train_folded_v1.csv'
 
 
@@ -129,15 +127,15 @@ cfg.voxel_spacing = 10.0
 # OPTIMIZATION & SCHEDULE
 
 cfg.fold = 0
-cfg.epochs = 10
+cfg.epochs = 3
 
 cfg.lr = 1e-3
 cfg.optimizer = "Adam"
 cfg.weight_decay = 0.
 cfg.warmup = 0.
-cfg.batch_size = 8
-cfg.batch_size_val = 16
-cfg.sub_batch_size = 4
+cfg.batch_size = 4
+cfg.batch_size_val = 8
+cfg.sub_batch_size = 2
 cfg.roi_size = [96,96,96]
 cfg.train_sub_epochs = 1112
 cfg.val_sub_epochs = 1
