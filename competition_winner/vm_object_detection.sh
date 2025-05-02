@@ -3,52 +3,31 @@
 # Exit on error
 set -e
 
-# Update package index
-sudo apt-get update
+echo "Setting up environment for CryoET training..."
 
-# Install required packages
-sudo apt-get install -y \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release
+# Install required system packages
+echo "Installing system dependencies..."
+sudo apt update
+sudo apt install -y python3-venv python3-pip
 
-# Add Docker's official GPG key
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+# Create and activate virtual environment
+echo "Creating Python virtual environment..."
+python3 -m venv venv
+source venv/bin/activate
 
-# Set up the Docker repository
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Install CUDA dependencies
+echo "Installing CUDA dependencies..."
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 
-# Update package index again
-sudo apt-get update
+# Install other requirements
+echo "Installing Python dependencies..."
+pip install -r vkr/Kaggle-2024-CryoET/requirements.txt
 
-# Install Docker
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+# Create directory for pretrained weights
+echo "Creating directory for pretrained weights..."
+mkdir -p pretrained/wholeBody_ct_segmentation/models
 
-# Add current user to docker group
-sudo usermod -aG docker $USER
-
-# Start and enable Docker service
-sudo systemctl start docker
-sudo systemctl enable docker
-sudo usermod -aG docker $USER && sudo systemctl restart docker
-
-# Install NVIDIA Container Toolkit
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
-   && curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add - \
-   && curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
-
-sudo apt-get update
-sudo apt-get install -y nvidia-docker2
-sudo systemctl restart docker
-
-exec $SHELL
-
-git clone https://github.com/ChristofHenkel/kaggle-cryoet-1st-place-segmentation.git
-git clone https://github.com/molokhovdmitry/czii-model-comparison.git
-cp /home/ubuntu/czii-model-comparison/competition_winner/common_config.py /home/ubuntu/kaggle-cryoet-1st-place-segmentation/configs
-
-echo "Now you can run: docker run -it --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -v $(pwd):/workspace nvcr.io/nvidia/pytorch:24.08-py3"
+echo "Setup complete! To start training:"
+echo "1. Download pretrained weights from: https://github.com/Project-MONAI/model-zoo/releases/download/hosting_storage_v1/wholeBody_ct_segmentation_v0.1.9.zip"
+echo "2. Unzip the model checkpoint to pretrained/wholeBody_ct_segmentation/models/model.pt"
+echo "3. Run: bash vkr/Kaggle-2024-CryoET/train.sh"

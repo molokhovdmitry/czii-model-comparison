@@ -5,9 +5,9 @@ cfg = SimpleNamespace(**{})
 
 # stages
 cfg.train = True
-cfg.val = True
-cfg.test = True
-cfg.train_val = True
+cfg.test = False
+cfg.train = True
+cfg.train_val = False
 
 # dataset
 cfg.batch_size_val = None
@@ -87,10 +87,6 @@ cfg.data_folder = '/workspace/czii-cryo-et-object-identification/train/static/Ex
 cfg.train_df = 'train_folded_v1.csv'
 
 
-# stages
-cfg.test = False
-cfg.train = True
-cfg.train_val = False
 
 #logging
 cfg.neptune_project = None
@@ -127,7 +123,7 @@ cfg.voxel_spacing = 10.0
 # OPTIMIZATION & SCHEDULE
 
 cfg.fold = 0
-cfg.epochs = 3
+cfg.epochs = 4
 
 cfg.lr = 1e-3
 cfg.optimizer = "Adam"
@@ -135,7 +131,7 @@ cfg.weight_decay = 0.
 cfg.warmup = 0.
 cfg.batch_size = 4
 cfg.batch_size_val = 8
-cfg.sub_batch_size = 2
+cfg.sub_batch_size = 4
 cfg.roi_size = [96,96,96]
 cfg.train_sub_epochs = 1112
 cfg.val_sub_epochs = 1
