@@ -36,12 +36,10 @@ mkdir -p pretrained/wholeBody_ct_segmentation/models
 
 echo "Downloading and setting up pretrained weights..."
 wget https://github.com/Project-MONAI/model-zoo/releases/download/hosting_storage_v1/wholeBody_ct_segmentation_v0.1.9.zip
-unzip wholeBody_ct_segmentation_v0.1.9.zip -d pretrained/wholeBody_ct_segmentation/models/
-mv pretrained/wholeBody_ct_segmentation/models/wholeBody_ct_segmentation_v0.1.9/model.pt pretrained/wholeBody_ct_segmentation/models/
-rm -rf pretrained/wholeBody_ct_segmentation/models/wholeBody_ct_segmentation_v0.1.9
-rm wholeBody_ct_segmentation_v0.1.9.zip
+sudo apt install unzip
+mkdir -p /home/ubuntu/Kaggle-2024-CryoET/pretrained
+unzip wholeBody_ct_segmentation_v0.1.9.zip -d /home/ubuntu/Kaggle-2024-CryoET/pretrained
 
 cp /home/ubuntu/czii-model-comparison/competition_winner/train_object_detection.sh /home/ubuntu/Kaggle-2024-CryoET/train.sh
 
-echo "Setup complete! To start training:"
-echo "Run: bash vkr/Kaggle-2024-CryoET/train.sh"
+export CRYOET_DATA_ROOT=/home/ubuntu/czii-cryo-et-object-identification
