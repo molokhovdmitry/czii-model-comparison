@@ -34,7 +34,7 @@ for FOLD in 0
 do
   torchrun --standalone --nproc-per-node=1 train_od.py \
   --average_tokens_across_devices=True \
-  --dataloader_num_workers=8 \
+  --dataloader_num_workers=4 \
   --dataloader_persistent_workers=True \
   --dataloader_pin_memory=True \
   --ddp_find_unused_parameters=True \
@@ -44,14 +44,14 @@ do
   --max_grad_norm=3 \
   --ddp_find_unused_parameters=True \
   --model_name=dynunet  \
-  --num_train_epochs=75 \
-  --per_device_train_batch_size=6 \
+  --num_train_epochs=10 \
+  --per_device_train_batch_size=4 \
   --scale_limit=0.05 \
   --use_6_classes=True \
   --use_instance_crops=True \
   --use_random_crops=True \
   --use_stride4=False \
-  --warmup_steps=128 \
+  --warmup_steps=16 \
   --weight_decay=0.0001 \
   --x_rotation_limit=5 \
   --x_rotation_limit=5 \
