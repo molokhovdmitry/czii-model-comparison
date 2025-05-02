@@ -13,7 +13,7 @@ do
   --max_grad_norm=3 \
   --ddp_find_unused_parameters=True \
   --model_name=segresnetv2 \
-  --num_train_epochs=10 \
+  --num_train_epochs=5 \
   --per_device_train_batch_size=2 \
   --pretrained_backbone_path=/home/ubuntu/Kaggle-2024-CryoET/pretrained/wholeBody_ct_segmentation/models/model.pt \
   --scale_limit=0.05 \
@@ -44,7 +44,7 @@ do
   --max_grad_norm=3 \
   --ddp_find_unused_parameters=True \
   --model_name=dynunet  \
-  --num_train_epochs=10 \
+  --num_train_epochs=8 \
   --per_device_train_batch_size=4 \
   --scale_limit=0.05 \
   --use_6_classes=True \
@@ -58,3 +58,4 @@ do
   --seed=$FOLD \
   --interpolation_mode=1 \
   --validate_on_rot90=True
+done
