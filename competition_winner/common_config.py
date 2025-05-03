@@ -5,9 +5,9 @@ cfg = SimpleNamespace(**{})
 
 # stages
 cfg.train = True
-cfg.test = False
-cfg.train = True
-cfg.train_val = False
+cfg.val = True
+cfg.test = True
+cfg.train_val = True
 
 # dataset
 cfg.batch_size_val = None
@@ -54,7 +54,7 @@ cfg.eval_epochs = 1
 cfg.save_pp_csv = True
 
 
-# ressources
+# resources
 cfg.find_unused_parameters = False
 cfg.grad_accumulation = 1
 cfg.syncbn = False
@@ -85,8 +85,6 @@ cfg.disable_tqdm = False
 
 cfg.data_folder = '/workspace/czii-cryo-et-object-identification/train/static/ExperimentRuns/'
 cfg.train_df = 'train_folded_v1.csv'
-
-
 
 #logging
 cfg.neptune_project = None
