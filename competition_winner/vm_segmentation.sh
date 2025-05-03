@@ -36,19 +36,21 @@ sudo systemctl start docker
 sudo systemctl enable docker
 sudo usermod -aG docker $USER && sudo systemctl restart docker
 
-# Install NVIDIA Container Toolkit
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
-   && curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add - \
-   && curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+# Install NVIDIA Container Toolkit using the newer method
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+
+curl -s -L https://nvidia.github.io/libnvidia-container/ubuntu22.04/libnvidia-container.list | \
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
 
 sudo apt-get update
-sudo apt-get install -y nvidia-docker2
+sudo apt-get install -y nvidia-container-toolkit
+sudo nvidia-ctk runtime configure --runtime=docker
 sudo systemctl restart docker
-
-exec $SHELL
 
 git clone https://github.com/ChristofHenkel/kaggle-cryoet-1st-place-segmentation.git
 git clone https://github.com/molokhovdmitry/czii-model-comparison.git
 cp /home/ubuntu/czii-model-comparison/competition_winner/common_config.py /home/ubuntu/kaggle-cryoet-1st-place-segmentation/configs
 
+echo "Restart the shell to be able to run docker"
 echo "Now you can run: docker run -it --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -v $(pwd):/workspace nvcr.io/nvidia/pytorch:24.08-py3"
