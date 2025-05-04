@@ -20,9 +20,7 @@ cross_validation:
 
 training:
   active: true
-  semantic_classes: [
-    'apo-ferritin',
-  ]         # List of k classes that the network will learn, separated by commas
+  semantic_classes: ['ribosome']
   processing_tomo: "tomo"            # Column name in dataset_table corresponding to raw tomo used for training
   box_size: 64                       # Box side of the partition
   min_label_fraction: 0.001          # Minimum label required in each box considered for the training partition
@@ -51,7 +49,7 @@ training:
 
 prediction:
   active: true
-  semantic_class: 'apo-ferritin'          # Semantic class to be predicted
+  semantic_class: 'ribosome'          # Semantic class to be predicted
 
 # Thresholding clustering and motl generation
 postprocessing_clustering:
@@ -69,7 +67,7 @@ postprocessing_clustering:
 # For precision recall in particle picking
 evaluation:
   particle_picking:
-    active: false
+    active: true
     pr_tolerance_radius: 10              # radius in voxels for considering two coordinate corresp. to same particle
     statistics_file: "pr_statistics.csv" # statistics file where area under pr curve will be stored
   segmentation_evaluation:

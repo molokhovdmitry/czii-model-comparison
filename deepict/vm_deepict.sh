@@ -5,6 +5,8 @@ mkdir czii-cryo-et-object-identification
 
 git clone https://github.com/ZauggGroup/DeePiCt.git
 git clone https://github.com/molokhovdmitry/czii-model-comparison.git
+cp /home/ubuntu/czii-model-comparison/deepict/particle_picking_evaluation.py DeePiCt/3d_cnn/scripts/particle_picking_evaluation.py
+cp /home/ubuntu/czii-model-comparison/deepict/statistics_utils.py DeePiCt/3d_cnn/src/performance/statistics_utils.py
 cd DeePiCt
 
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
