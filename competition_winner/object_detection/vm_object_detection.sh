@@ -28,7 +28,7 @@ git clone https://github.com/molokhovdmitry/czii-model-comparison
 echo "Installing Python dependencies..."
 python3 -m venv venv
 source venv/bin/activate
-pip install -r czii-model-comparison/competition_winner/requirements.txt
+pip install -r czii-model-comparison/competition_winner/object_detection/requirements.txt
 
 # Create directory for pretrained weights
 echo "Creating directory for pretrained weights..."
@@ -40,6 +40,9 @@ sudo apt install unzip
 mkdir -p /home/ubuntu/Kaggle-2024-CryoET/pretrained
 unzip wholeBody_ct_segmentation_v0.1.9.zip -d /home/ubuntu/Kaggle-2024-CryoET/pretrained
 
-cp /home/ubuntu/czii-model-comparison/competition_winner/train_object_detection.sh /home/ubuntu/Kaggle-2024-CryoET/train.sh
+cp /home/ubuntu/czii-model-comparison/competition_winner/object_detection/train_object_detection.sh /home/ubuntu/Kaggle-2024-CryoET/train.sh
+cp /home/ubuntu/czii-model-comparison/competition_winner/object_detection/object_detection_module.py /home/ubuntu/Kaggle-2024-CryoET/cryoet/training/object_detection_module.py
+cp /home/ubuntu/czii-model-comparison/competition_winner/object_detection/evaluate_ensemble.py /home/ubuntu/Kaggle-2024-CryoET/evaluate_ensemble.py
+cp /home/ubuntu/czii-model-comparison/competition_winner/object_detection/metrics.py /home/ubuntu/Kaggle-2024-CryoET/cryoet/metric.py
 
 export CRYOET_DATA_ROOT=/home/ubuntu/czii-cryo-et-object-identification
