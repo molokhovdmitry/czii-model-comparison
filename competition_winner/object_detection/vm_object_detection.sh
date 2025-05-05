@@ -44,5 +44,7 @@ cp /home/ubuntu/czii-model-comparison/competition_winner/object_detection/train_
 cp /home/ubuntu/czii-model-comparison/competition_winner/object_detection/object_detection_module.py /home/ubuntu/Kaggle-2024-CryoET/cryoet/training/object_detection_module.py
 cp /home/ubuntu/czii-model-comparison/competition_winner/object_detection/evaluate_ensemble.py /home/ubuntu/Kaggle-2024-CryoET/evaluate_ensemble.py
 cp /home/ubuntu/czii-model-comparison/competition_winner/object_detection/metrics.py /home/ubuntu/Kaggle-2024-CryoET/cryoet/metric.py
+cp /home/ubuntu/czii-model-comparison/competition_winner/object_detection/cross_validation.py /home/ubuntu/Kaggle-2024-CryoET/cryoet/data/cross_validation.py
+cp /home/ubuntu/czii-model-comparison/competition_winner/object_detection/data_module.py /home/ubuntu/Kaggle-2024-CryoET/cryoet/data/detection/data_module.py
 
 export CRYOET_DATA_ROOT=/home/ubuntu/czii-cryo-et-object-identification
