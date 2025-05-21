@@ -20,7 +20,7 @@ cross_validation:
 
 training:
   active: true
-  semantic_classes: ['ribosome']
+  semantic_classes: ['apo-ferritin', 'beta-amylase', 'beta-galactosidase', 'ribosome', 'thyroglobulin', 'virus-like-particle']
   processing_tomo: "tomo"            # Column name in dataset_table corresponding to raw tomo used for training
   box_size: 64                       # Box side of the partition
   min_label_fraction: 0.001          # Minimum label required in each box considered for the training partition
@@ -49,7 +49,6 @@ training:
 
 prediction:
   active: true
-  semantic_class: 'ribosome'          # Semantic class to be predicted
 
 # Thresholding clustering and motl generation
 postprocessing_clustering:

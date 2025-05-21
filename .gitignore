@@ -179,5 +179,5 @@ czii_data/
 .done_patterns/
 .snakemake/
 test_configs/
-*.csv
 logs/
+.ipynb

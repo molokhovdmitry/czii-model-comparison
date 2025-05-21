@@ -56,5 +56,7 @@ cp /home/ubuntu/czii-model-comparison/competition_winner/segmentation/utils.py /
 cp /home/ubuntu/czii-model-comparison/competition_winner/segmentation/cfg_resnet34_custom.py /home/ubuntu/kaggle-cryoet-1st-place-segmentation/configs
 cp /home/ubuntu/czii-model-comparison/competition_winner/segmentation/cfg_effnetb3_custom.py /home/ubuntu/kaggle-cryoet-1st-place-segmentation/configs
 cp /home/ubuntu/czii-model-comparison/competition_winner/segmentation/train_segmentation.py /home/ubuntu/kaggle-cryoet-1st-place-segmentation/train_segmentation.py
+cp /home/ubuntu/czii-model-comparison/competition_winner/segmentation/train.py /home/ubuntu/kaggle-cryoet-1st-place-segmentation/train.py
+
 echo "Restart the shell to be able to run docker"
 echo "Now you can run: docker run -it --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -v $(pwd):/workspace nvcr.io/nvidia/pytorch:24.08-py3"

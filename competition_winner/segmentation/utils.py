@@ -20,20 +20,20 @@ import pickle
 
 def get_linear_schedule_with_warmup(optimizer, num_warmup_steps, num_training_steps, last_epoch=-1):
     """
-    from https://github.com/huggingface/transformers/blob/main/src/transformers/optimization.py
-    Create a schedule with a learning rate that decreases linearly from the initial lr set in the optimizer to 0, after
-    a warmup period during which it increases linearly from 0 to the initial lr set in the optimizer.
+    из https://github.com/huggingface/transformers/blob/main/src/transformers/optimization.py
+    Создает расписание с коэффициентом обучения, который линейно уменьшается от начального lr, установленного в оптимизаторе, до 0,
+    после периода разогрева, в течение которого он линейно увеличивается от 0 до начального lr, установленного в оптимизаторе.
     Args:
         optimizer ([`~torch.optim.Optimizer`]):
-            The optimizer for which to schedule the learning rate.
+            Оптимизатор, для которого планируется скорость обучения.
         num_warmup_steps (`int`):
-            The number of steps for the warmup phase.
+            Количество шагов для фазы разогрева.
         num_training_steps (`int`):
-            The total number of training steps.
-        last_epoch (`int`, *optional*, defaults to -1):
-            The index of the last epoch when resuming training.
+            Общее количество шагов обучения.
+        last_epoch (`int`, *необязательный*, по умолчанию -1):
+            Индекс последней эпохи при возобновлении обучения.
     Return:
-        `torch.optim.lr_scheduler.LambdaLR` with the appropriate schedule.
+        `torch.optim.lr_scheduler.LambdaLR` с соответствующим расписанием.
     """
 
     def lr_lambda(current_step: int):
@@ -48,24 +48,24 @@ def get_linear_schedule_with_warmup(optimizer, num_warmup_steps, num_training_st
 
 def get_cosine_schedule_with_warmup(optimizer, num_warmup_steps, num_training_steps, num_cycles= 0.5, last_epoch= -1):
     """
-    from https://github.com/huggingface/transformers/blob/main/src/transformers/optimization.py
-    Create a schedule with a learning rate that decreases following the values of the cosine function between the
-    initial lr set in the optimizer to 0, after a warmup period during which it increases linearly between 0 and the
-    initial lr set in the optimizer.
+    из https://github.com/huggingface/transformers/blob/main/src/transformers/optimization.py
+    Создает расписание с коэффициентом обучения, который уменьшается в соответствии со значениями косинусоидальной функции между
+    начальным lr, установленным в оптимизаторе, до 0, после периода разогрева, в течение которого он линейно увеличивается между 0 и
+    начальным lr, установленным в оптимизаторе.
     Args:
         optimizer ([`~torch.optim.Optimizer`]):
-            The optimizer for which to schedule the learning rate.
+            Оптимизатор, для которого планируется скорость обучения.
         num_warmup_steps (`int`):
-            The number of steps for the warmup phase.
+            Количество шагов для фазы разогрева.
         num_training_steps (`int`):
-            The total number of training steps.
-        num_cycles (`float`, *optional*, defaults to 0.5):
-            The number of waves in the cosine schedule (the defaults is to just decrease from the max value to 0
-            following a half-cosine).
-        last_epoch (`int`, *optional*, defaults to -1):
-            The index of the last epoch when resuming training.
+            Общее количество шагов обучения.
+        num_cycles (`float`, *необязательный*, по умолчанию 0.5):
+            Количество волн в косинусоидальном расписании (по умолчанию просто уменьшается от максимального значения до 0,
+            следуя половине косинусоиды).
+        last_epoch (`int`, *необязательный*, по умолчанию -1):
+            Индекс последней эпохи при возобновлении обучения.
     Return:
-        `torch.optim.lr_scheduler.LambdaLR` with the appropriate schedule.
+        `torch.optim.lr_scheduler.LambdaLR` с соответствующим расписанием.
     """
 
     def lr_lambda(current_step):
@@ -137,11 +137,11 @@ class OrderedDistributedSampler(Sampler):
     def __iter__(self):
         indices = list(range(len(self.dataset)))
 
-        # add extra samples to make it evenly divisible
+        # добавить дополнительные образцы, чтобы сделать его равномерно делимым
         indices += indices[: (self.total_size - len(indices))]
         assert len(indices) == self.total_size
 
-        # subsample
+        # подвыборка
         indices = indices[
             self.rank * self.num_samples : self.rank * self.num_samples + self.num_samples
         ]
@@ -185,24 +185,24 @@ def get_model(cfg, ds):
     if cfg.pretrained_weights is not None:
         if type(cfg.pretrained_weights) == list:
             cfg.pretrained_weights = cfg.pretrained_weights[cfg.fold]
-        print(f'{cfg.local_rank}: loading weights from',cfg.pretrained_weights)
+        print(f'{cfg.local_rank}: загрузка весов из',cfg.pretrained_weights)
         state_dict = torch.load(cfg.pretrained_weights, map_location='cpu')
         if "model" in state_dict.keys():
             state_dict = state_dict['model']
         state_dict = {key.replace('module.',''):val for key,val in state_dict.items()}
         if cfg.pop_weights is not None:
-            print(f'popping {cfg.pop_weights}')
+            print(f'удаление {cfg.pop_weights}')
             to_pop = []
             for key in state_dict:
                 for item in cfg.pop_weights:
                     if item in key:
                         to_pop += [key]
             for key in to_pop:
-                print(f'popping {key}')
+                print(f'удаление {key}')
                 state_dict.pop(key)
 
         net.load_state_dict(state_dict, strict=cfg.pretrained_weights_strict)
-        print(f'{cfg.local_rank}: weights loaded from',cfg.pretrained_weights)
+        print(f'{cfg.local_rank}: веса загружены из',cfg.pretrained_weights)
     
     return net
 
@@ -230,7 +230,7 @@ def create_checkpoint(cfg, model, optimizer, epoch, scheduler=None, scaler=None)
 
 def load_checkpoint(cfg, model, optimizer, scheduler=None, scaler=None):
     
-    print(f'loading ckpt {cfg.resume_from}')
+    print(f'загрузка контрольной точки {cfg.resume_from}')
     checkpoint = torch.load(cfg.resume_from, map_location='cpu')
     model.load_state_dict(checkpoint['model'])
     optimizer.load_state_dict(checkpoint['optimizer'])
@@ -244,8 +244,8 @@ def load_checkpoint(cfg, model, optimizer, scheduler=None, scaler=None):
 
 def get_dataset(df, cfg, mode='train'):
 
-    # modes train, val, index
-    print(f"Loading {mode} dataset")
+    # режимы train, val, index
+    print(f"Загрузка набора данных {mode}")
 
     if mode == 'train':
         dataset = get_train_dataset(df, cfg)
@@ -327,7 +327,7 @@ def get_train_dataloader(train_ds, cfg):
             drop_last=cfg.drop_last,
             worker_init_fn=worker_init_fn,
         )
-    print(f"train: dataset {len(train_ds)}, dataloader {len(train_dataloader)}")
+    print(f"обучение: набор данных {len(train_ds)}, загрузчик данных {len(train_dataloader)}")
     return train_dataloader
 
 
@@ -358,7 +358,7 @@ def get_val_dataloader(val_ds, cfg):
         collate_fn=cfg.val_collate_fn,
         worker_init_fn=worker_init_fn,
     )
-    print(f"valid: dataset {len(val_ds)}, dataloader {len(val_dataloader)}")
+    print(f"валидация: набор данных {len(val_ds)}, загрузчик данных {len(val_dataloader)}")
     return val_dataloader
 
 
@@ -389,7 +389,7 @@ def get_test_dataloader(test_ds, cfg):
         collate_fn=cfg.val_collate_fn,
         worker_init_fn=worker_init_fn,
     )
-    print(f"test: dataset {len(test_ds)}, dataloader {len(test_dataloader)}")
+    print(f"тест: набор данных {len(test_ds)}, загрузчик данных {len(test_dataloader)}")
     return test_dataloader
 
 
@@ -496,10 +496,10 @@ def read_df(fn):
 
 def get_data(cfg):
 
-    # setup dataset
+    # настройка набора данных
     if type(cfg.train_df) == list:
         cfg.train_df = cfg.train_df[cfg.fold]
-    print(f"reading {cfg.train_df}")
+    print(f"чтение {cfg.train_df}")
     df = read_df(cfg.train_df)
 
     if cfg.test:
@@ -507,12 +507,12 @@ def get_data(cfg):
     else:
         test_df = None
     
-    # Use custom data split if specified
+    # Использовать пользовательское разделение данных, если указано
     if hasattr(cfg, 'custom_data_split') and cfg.custom_data_split:
         train_df, val_df = cfg.get_custom_data_split(df)
         return train_df, val_df, test_df
     
-    # Original data splitting logic
+    # Исходная логика разделения данных
     if cfg.val_df:
         if type(cfg.val_df) == list:
             cfg.val_df = cfg.val_df[cfg.fold]
@@ -569,12 +569,12 @@ def loadobj(file):
         return pickle.load(handle)
 
 def get_level(level_str):
-    ''' get level'''
+    ''' получить уровень'''
     l_names = {logging.getLevelName(lvl).lower(): lvl for lvl in [10, 20, 30, 40, 50]} # noqa
     return l_names.get(level_str.lower(), logging.INFO)
 
 def get_logger(name, level_str):
-    ''' get logger'''
+    ''' получить логгер'''
     logger = logging.getLogger(name)
     logger.setLevel(get_level(level_str))
     handler = logging.StreamHandler()

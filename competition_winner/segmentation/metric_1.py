@@ -3,7 +3,7 @@ import torch
 from sklearn.metrics import roc_auc_score
 
 """
-Derived from:
+Получено из:
 https://github.com/cellcanvas/album-catalog/blob/main/solutions/copick/compare-picks/solution.py
 """
 
@@ -33,9 +33,9 @@ def compute_metrics(reference_points, reference_radius, candidate_points):
     matches_within_threshold = []
     for match in raw_matches:
         matches_within_threshold.extend(match)
-    # Prevent submitting multiple matches per particle.
-    # This won't be be strictly correct in the (extremely rare) case where true particles
-    # are very close to each other.
+    # Предотвращает отправку нескольких совпадений на одну частицу.
+    # Это не будет строго корректным в (крайне редком) случае, когда истинные частицы
+    # находятся очень близко друг к другу.
     matches_within_threshold = set(matches_within_threshold)
     tp = int(len(matches_within_threshold))
     fp = int(num_candidate_particles - tp)
@@ -45,23 +45,23 @@ def compute_metrics(reference_points, reference_radius, candidate_points):
 
 def calculate_f_scores(precision, recall, beta=1.0):
     """
-    Calculate F1 and F-beta scores from precision and recall values.
+    Рассчитывает метрики F1 и F-beta на основе значений точности и полноты.
     
-    Args:
-        precision: Precision value
-        recall: Recall value
-        beta: Beta parameter for F-beta score (default 1.0 which gives F1 score)
+    Аргументы:
+        precision: Значение точности
+        recall: Значение полноты
+        beta: Параметр бета для метрики F-beta (по умолчанию 1.0, что дает F1)
         
-    Returns:
-        Tuple (f1_score, f_beta_score)
+    Возвращает:
+        Кортеж (f1_score, f_beta_score)
     """
     if (precision + recall) == 0:
         return 0.0, 0.0
         
-    # Calculate F1 score (harmonic mean of precision and recall)
+    # Рассчитать F1 (среднее гармоническое точности и полноты)
     f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
     
-    # Calculate F-beta score
+    # Рассчитать F-beta
     beta_squared = beta ** 2
     f_beta_score = (1 + beta_squared) * (precision * recall) / (beta_squared * precision + recall) if (precision + recall) > 0 else 0.0
     
@@ -77,13 +77,13 @@ def score(
         weighted=True,
 ) -> float:
     '''
-    F_beta & F1
-      - a true positive occurs when
-         - (a) the predicted location is within a threshold of the particle radius, and
-         - (b) the correct `particle_type` is specified
-      - raw results (TP, FP, FN) are aggregated across all experiments for each particle type
-      - f_beta and f1 are calculated for each particle type
-      - individual scores are weighted by particle type for final score
+    F_beta и F1
+      - истинно-положительный результат происходит, когда
+         - (a) предсказанное местоположение находится в пределах порогового значения радиуса частицы, и
+         - (b) указан правильный `particle_type`
+      - необработанные результаты (TP, FP, FN) агрегируются по всем экспериментам для каждого типа частиц
+      - f_beta и f1 рассчитываются для каждого типа частиц
+      - отдельные оценки взвешиваются по типу частиц для итоговой оценки
     '''
 
     particle_radius = {
@@ -106,11 +106,11 @@ def score(
 
     particle_radius = {k: v * distance_multiplier for k, v in particle_radius.items()}
 
-    # Filter submission to only contain experiments found in the solution split
+    # Фильтровать submission, чтобы включать только эксперименты, найденные в solution split
     split_experiments = set(solution['experiment'].unique())
     submission = submission.loc[submission['experiment'].isin(split_experiments)]
 
-    # Only allow known particle types
+    # Разрешать только известные типы частиц
     if not set(submission['particle_type'].unique()).issubset(set(weights.keys())):
         raise ParticipantVisibleError('Unrecognized `particle_type`.')
 
@@ -204,7 +204,7 @@ def calc_metric(cfg, pp_out, val_df, pre="val"):
     submission['experiment'] = solution['experiment'].unique()[0]
     submission['id'] = range(len(submission))
 
-    # Find optimal thresholds for both F-beta and F1 scores
+    # Найти оптимальные пороговые значения для метрик F-beta и F1
     best_ths_fbeta = []
     best_ths_f1 = []
     for p in particles:
@@ -229,7 +229,7 @@ def calc_metric(cfg, pp_out, val_df, pre="val"):
         best_ths_fbeta.append(best_th_fbeta)
         best_ths_f1.append(best_th_f1)
     
-    # Create submissions using optimal thresholds for both metrics
+    # Создать submissions, используя оптимальные пороговые значения для обеих метрик
     submission_pp_fbeta = []
     submission_pp_f1 = []
     for th_fbeta, th_f1, p in zip(best_ths_fbeta, best_ths_f1, particles):
@@ -239,7 +239,7 @@ def calc_metric(cfg, pp_out, val_df, pre="val"):
     submission_pp_fbeta = pd.concat(submission_pp_fbeta)
     submission_pp_f1 = pd.concat(submission_pp_f1)
     
-    # Score the submissions
+    # Оценить результаты
     filtered_solution = solution[solution['particle_type']!='beta-amylase'].copy()
     
     fbeta_metrics, fbeta_details = score(
@@ -254,17 +254,17 @@ def calc_metric(cfg, pp_out, val_df, pre="val"):
         submission_pp_f1.copy(),
         row_id_column_name = 'id',
         distance_multiplier=0.5,
-        beta=1)  # Use beta=1 for F1 score
+        beta=1)  # Использовать beta=1 для метрики F1
     
-    # Combine results
+    # Объединить результаты
     result = {}
     
-    # Add F-beta scores (competition metric)
+    # Добавить оценки F-beta (метрика соревнования)
     for k, v in fbeta_details['fbeta'].items():
         result['score_' + k] = v
     result['score'] = fbeta_metrics['fbeta']
     
-    # Add F1 scores
+    # Добавить оценки F1
     for k, v in f1_details['f1'].items():
         result['f1_score_' + k] = v
     result['f1_score'] = f1_metrics['f1']

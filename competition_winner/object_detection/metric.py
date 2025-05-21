@@ -24,9 +24,9 @@ def compute_metrics(reference_points, reference_radius, candidate_points):
     matches_within_threshold = []
     for match in raw_matches:
         matches_within_threshold.extend(match)
-    # Prevent submitting multiple matches per particle.
-    # This won't be be strictly correct in the (extremely rare) case where true particles
-    # are very close to each other.
+    # Предотвращает отправку нескольких совпадений на одну частицу.
+    # Это не будет строго корректным в (крайне редком) случае, когда истинные частицы
+    # находятся очень близко друг к другу.
     matches_within_threshold = set(matches_within_threshold)
     tp = int(len(matches_within_threshold))
     fp = int(num_candidate_particles - tp)
@@ -36,23 +36,23 @@ def compute_metrics(reference_points, reference_radius, candidate_points):
 
 def calculate_f_scores(precision, recall, beta=1.0):
     """
-    Calculate F1 and F-beta scores from precision and recall values.
+    Рассчитывает метрики F1 и F-beta на основе значений точности и полноты.
     
-    Args:
-        precision: Precision value
-        recall: Recall value
-        beta: Beta parameter for F-beta score (default 1.0 which gives F1 score)
+    Аргументы:
+        precision: Значение точности
+        recall: Значение полноты
+        beta: Параметр бета для метрики F-beta (по умолчанию 1.0, что дает F1)
         
-    Returns:
-        Tuple (f1_score, f_beta_score)
+    Возвращает:
+        Кортеж (f1_score, f_beta_score)
     """
     if (precision + recall) == 0:
         return 0.0, 0.0
         
-    # Calculate F1 score (harmonic mean of precision and recall)
+    # Рассчитать F1 (среднее гармоническое точности и полноты)
     f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
     
-    # Calculate F-beta score
+    # Рассчитать F-beta
     beta_squared = beta ** 2
     f_beta_score = (1 + beta_squared) * (precision * recall) / (beta_squared * precision + recall) if (precision + recall) > 0 else 0.0
     
@@ -68,12 +68,12 @@ def score_submission(
 ) -> float:
     """
     F_beta
-      - a true positive occurs when
-         - (a) the predicted location is within a threshold of the particle radius, and
-         - (b) the correct `particle_type` is specified
-      - raw results (TP, FP, FN) are aggregated across all experiments for each particle type
-      - f_beta is calculated for each particle type
-      - individual f_beta scores are weighted by particle type for final score
+      - истинно-положительный результат происходит, когда
+         - (a) предсказанное местоположение находится в пределах порогового значения радиуса частицы, и
+         - (b) указан правильный `particle_type`
+      - необработанные результаты (TP, FP, FN) агрегируются по всем экспериментам для каждого типа частиц
+      - f_beta рассчитывается для каждого типа частиц
+      - отдельные оценки f_beta взвешиваются по типу частиц для итоговой оценки
     """
 
     particle_radius = {
@@ -96,11 +96,11 @@ def score_submission(
 
     particle_radius = {k: v * distance_multiplier for k, v in particle_radius.items()}
 
-    # Filter submission to only contain experiments found in the solution split
+    # Фильтровать submission, чтобы включать только эксперименты, найденные в solution split
     split_experiments = set(solution["experiment"].unique())
     submission = submission.loc[submission["experiment"].isin(split_experiments)]
 
-    # Only allow known particle types
+    # Разрешать только известные типы частиц
     if not set(submission["particle_type"].unique()).issubset(set(weights.keys())):
         raise ParticipantVisibleError("Unrecognized `particle_type`.")
 
@@ -149,15 +149,15 @@ def score_submission(
         precision = tp / (tp + fp) if tp + fp > 0 else 0
         recall = tp / (tp + fn) if tp + fn > 0 else 0
         
-        # Calculate both F1 and F-beta scores
+        # Рассчитать оценки F1 и F-beta
         f1, fbeta = calculate_f_scores(precision, recall, beta=beta)
         
-        # Weight the scores according to the predefined weights
+        # Взвешивать оценки в соответствии с предопределенными весами
         weight = weights.get(particle_type, 1.0)
         aggregate_fbeta += fbeta * weight
         aggregate_f1 += f1 * weight
         
-        # Store both scores for each particle type
+        # Сохранить обе оценки для каждого типа частиц
         per_particle_scores[particle_type] = {
             "precision": precision,
             "recall": recall,

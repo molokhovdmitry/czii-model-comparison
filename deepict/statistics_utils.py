@@ -30,30 +30,30 @@ def precision_recall_calculator(predicted_coordinates: np.array or list,
                                 particle_radii: dict = None,
                                 particle_type: str = None):
     """
-    Calculate precision and recall for particle detection.
+    Рассчитывает точность и полноту для обнаружения частиц.
     
-    Args:
-        predicted_coordinates: Coordinates of predicted particles
-        value_predicted: Values/scores of predicted particles
-        true_coordinates: Coordinates of ground truth particles
-        radius: Default radius for considering two coordinates to correspond to the same particle
-        particle_radii: Dictionary mapping particle types to their radii in voxels
-        particle_type: Type of particle being evaluated
+    Аргументы:
+        predicted_coordinates: Координаты предсказанных частиц
+        value_predicted: Значения/оценки предсказанных частиц
+        true_coordinates: Координаты истинных частиц
+        radius: Радиус по умолчанию для определения соответствия двух координат одной и той же частице
+        particle_radii: Словарь, сопоставляющий типы частиц с их радиусами в вокселях
+        particle_type: Тип оцениваемой частицы
         
-    Returns:
-        Tuple containing precision, recall, and other metrics
+    Возвращает:
+        Кортеж, содержащий точность, полноту и другие метрики
     """
     true_coordinates = list(true_coordinates)
     predicted_coordinates = list(predicted_coordinates)
     
-    # Use the competition criterion if particle radii are provided
+    # Использовать критерий соревнования, если предоставлены радиусы частиц
     if particle_radii is not None and particle_type is not None and particle_type in particle_radii:
-        # A particle is considered "true" if it lies within a factor of 0.5 of the particle of interest's radius
+        # Частица считается "истинной", если она находится в пределах коэффициента 0.5 от радиуса интересующей частицы
         match_radius = 0.5 * particle_radii[particle_type]
-        print(f"Using match radius of {match_radius} (0.5 × {particle_radii[particle_type]}) for {particle_type}")
+        print(f"Используется радиус соответствия {match_radius} (0.5 × {particle_radii[particle_type]}) для {particle_type}")
     else:
         match_radius = radius
-        print(f"Using default match radius of {match_radius}")
+        print(f"Используется радиус соответствия по умолчанию {match_radius}")
     
     detected_true = list()
     predicted_true_positives = list()
@@ -63,9 +63,9 @@ def precision_recall_calculator(predicted_coordinates: np.array or list,
     precision = list()
     recall = list()
     total_true_points = len(true_coordinates)
-    assert total_true_points > 0, "one empty list here!"
+    assert total_true_points > 0, "один пустой список здесь!"
     if len(predicted_coordinates) == 0:
-        print("No predicted points")
+        print("Нет предсказанных точек")
         precision = []
         recall = []
         detected_true = []
@@ -105,7 +105,7 @@ def precision_recall_calculator(predicted_coordinates: np.array or list,
                     predicted_redundant.append(tuple(point))
                     value_predicted_redundant.append(value)
                 else:
-                    print("This should never happen!")
+                    print("Этого никогда не должно произойти!")
             else:
                 predicted_false_positives.append(tuple(point))
                 value_predicted_false_positives.append(value)
@@ -128,7 +128,7 @@ def precision_recall_calculator(predicted_coordinates: np.array or list,
 def f1_score_calculator(precision: list, recall: list):
     f1_score = []
     if len(precision) == 0:
-        print("No precision and recall")
+        print("Нет точности и полноты")
         f1_score = [0]
     else:
         for p, r in zip(precision, recall):
@@ -141,27 +141,27 @@ def f1_score_calculator(precision: list, recall: list):
 
 def f_beta_score_calculator(precision: list, recall: list, beta: float = 4.0):
     """
-    Calculate the F-beta score for precision and recall values.
-    The F-beta score is a weighted harmonic mean of precision and recall, 
-    where beta controls the weight of recall in the combined score.
+    Вычисляет оценку F-beta для значений точности и полноты.
+    F-beta - это взвешенное гармоническое среднее точности и полноты,
+    где beta контролирует вес полноты в комбинированной оценке.
     
     F-beta = (1 + beta²) * (precision * recall) / (beta² * precision + recall)
     
-    When beta = 1, this is equivalent to F1-score.
-    When beta > 1, more weight is given to recall (beta=4 used in the competition).
-    When beta < 1, more weight is given to precision.
+    Когда beta = 1, это эквивалентно F1-score.
+    Когда beta > 1, больший вес придается полноте (beta=4 используется в соревновании).
+    Когда beta < 1, больший вес придается точности.
     
-    Args:
-        precision: List of precision values
-        recall: List of recall values
-        beta: The beta value to use (default: 4.0 as per competition requirements)
+    Аргументы:
+        precision: Список значений точности
+        recall: Список значений полноты
+        beta: Значение beta для использования (по умолчанию: 4.0 согласно требованиям соревнования)
         
-    Returns:
-        List of F-beta scores
+    Возвращает:
+        Список оценок F-beta
     """
     f_beta_score = []
     if len(precision) == 0:
-        print("No precision and recall")
+        print("Нет точности и полноты")
         f_beta_score = [0]
     else:
         beta_squared = beta * beta
@@ -175,13 +175,13 @@ def f_beta_score_calculator(precision: list, recall: list, beta: float = 4.0):
 
 def get_max_F_beta(f_beta_score: list):
     """
-    Get the maximum F-beta score and its corresponding index.
+    Получает максимальную оценку F-beta и соответствующий ей индекс.
     
-    Args:
-        f_beta_score: List of F-beta scores
+    Аргументы:
+        f_beta_score: Список оценок F-beta
         
-    Returns:
-        Tuple of (max_f_beta, optimal_peak_number)
+    Возвращает:
+        Кортеж (max_f_beta, optimal_peak_number)
     """
     if len(f_beta_score) > 0:
         max_f_beta = np.max(f_beta_score)
@@ -194,13 +194,13 @@ def get_max_F_beta(f_beta_score: list):
 
 def quadrature_calculator(x_points: list, y_points: list) -> float:
     """
-    This function computes an approximate value of the integral of a real
-    function f in an interval, using the trapezoidal rule.
+    Эта функция вычисляет приближенное значение интеграла реальной
+    функции f в интервале, используя метод трапеций.
 
-    Input:
-    x_points: is a list of points in the x axis (not necessarily ordered)
-    y_points: is a list of points, such that y_points[n] = f(x_points[n]) for
-    each n.
+    Вход:
+    x_points: список точек на оси x (не обязательно упорядоченный)
+    y_points: список точек, таких что y_points[n] = f(x_points[n]) для
+    каждого n.
     """
     # sorted_y = [p for _, p in sorted(zip(x_points, y_points))]
     sorted_y = [p for _, p in
@@ -217,7 +217,7 @@ def quadrature_calculator(x_points: list, y_points: list) -> float:
 
 def pr_auc_score(precision: list, recall: list) -> float:
     """
-    This function computes an approximate value to the area
-    under the precision-recall (PR) curve.
+    Эта функция вычисляет приближенное значение площади
+    под кривой точность-полнота (PR).
     """
     return quadrature_calculator(recall, precision)
